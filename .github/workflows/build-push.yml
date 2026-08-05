@@ -67,7 +67,7 @@ jobs:
           echo "Container name: $CONTAINER_NAME"
 
       - name: Deploy versioned image on Docker host
-        run: /home/ubuntu/pull-deploy.sh "$IMAGE_NAME" "$IMAGE_TAG" "$CONTAINER_NAME"
+        run: /home/ubuntu/pull-deploy.sh  "$IMAGE_TAG" 
 
       - name: Verify running container
         run: docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Ports}}"
