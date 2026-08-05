@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: aneesh292002/docker1
-  CONTAINER_NAME: docker1
+  IMAGE_NAME: aneesh292002/docker
+  CONTAINER_NAME: docker
   HOST_PORT: 5000
   CONTAINER_PORT: 5000
 
