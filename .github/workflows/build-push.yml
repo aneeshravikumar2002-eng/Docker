@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE_NAME: aneesh292002/docker
+  IMAGE_NAME: aneesh292002/docker1
 
 jobs:
   build-and-push:
