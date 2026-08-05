@@ -65,9 +65,29 @@ jobs:
         run: |
           echo "Deploying image: $IMAGE_NAME:$IMAGE_TAG"
           echo "Container name: $CONTAINER_NAME"
+          echo "Host port: $HOST_PORT"
+          echo "Container port: $CONTAINER_PORT"
 
-      - name: Deploy versioned image on Docker host
-        run: /home/ubuntu/pull-deploy.sh  "$IMAGE_TAG" 
+      - name: Pull versioned image on Docker host
+        run: docker pull $IMAGE_NAME:$IMAGE_TAG
+
+      - name: Stop old container if running
+        run: docker stop $CONTAINER_NAME || true
+
+      - name: Remove old container if exists
+        run: docker rm $CONTAINER_NAME || true
+
+      - name: Deploy new container on Docker host
+        run: |
+          docker run -d \
+            --name $CONTAINER_NAME \
+            -p $HOST_PORT:$CONTAINER_PORT \
+            $IMAGE_NAME:$IMAGE_TAG
 
       - name: Verify running container
-        run: docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Ports}}"
+        run: |
+          docker ps --format "table {{.ID}}\t{{.Image}}\t{{.Names}}\t{{.Ports}}"
+
+      - name: Test application locally
+        run: |
+          curl http://localhost:$HOST_PORT || true
