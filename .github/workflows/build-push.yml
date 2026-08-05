@@ -1,9 +1,10 @@
-name: Build and Push Docker Image
+name: Build Push and Deploy to Docker Host
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   IMAGE_NAME: aneesh292002/docker
@@ -26,13 +27,18 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: |
-          docker build --no-cache \
-            -t $IMAGE_NAME:latest \
-            -t $IMAGE_NAME:${{ github.sha }} .
+        run: docker build --no-cache -t $IMAGE_NAME:latest .
 
-      - name: Push latest image
+      - name: Push Docker image
         run: docker push $IMAGE_NAME:latest
 
-      - name: Push commit image
-        run: docker push $IMAGE_NAME:${{ github.sha }}
+  deploy-to-docker-host:
+    needs: build-and-push
+    runs-on: self-hosted
+
+    steps:
+      - name: Deploy latest image on Docker host
+        run: /home/ubuntu/pull-deploy.sh
+
+      - name: Verify running container
+        run: docker ps
